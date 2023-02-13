@@ -1,0 +1,38 @@
+<?xml version="1.1" ?>
+<settings>
+    <global>
+        <setspeed>0.65</setspeed>
+        <spellsets>
+            <tank1>
+                <slot01>sandspin</slot01>
+                <slot02>cocoon</slot02>
+                <slot03>jettatura</slot03>
+                <slot04>screwdriver</slot04>
+                <slot05>sheep song</slot05>
+                <slot06>terror touch</slot06>
+                <slot07>geist wall</slot07>
+                <slot08>healing breeze</slot08>
+                <slot09>pollen</slot09>
+                <slot10>wild carrot</slot10>
+                <slot11>blank gaze</slot11>
+                <slot12>grand slam</slot12>
+            </tank1>
+            <tank2>
+                <slot01>sandspin</slot01>
+                <slot02>cocoon</slot02>
+                <slot03>jettatura</slot03>
+                <slot04>screwdriver</slot04>
+                <slot05>sheep song</slot05>
+                <slot06>terror touch</slot06>
+                <slot07>geist wall</slot07>
+                <slot08>healing breeze</slot08>
+                <slot09>pollen</slot09>
+                <slot10>wild carrot</slot10>
+                <slot11>blank gaze</slot11>
+                <slot12>grand slam</slot12>
+                <slot13>frightful roar</slot13>
+                <slot14>stinking gas</slot14>
+            </tank2>
+        </spellsets>
+    </global>
+</settings>

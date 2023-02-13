@@ -1,0 +1,53 @@
+<?xml version="1.1" ?>
+<settings>
+    <global>
+        <box>
+            <bg>
+                <alpha>150</alpha>
+                <blue>0</blue>
+                <green>0</green>
+                <red>0</red>
+                <visible>true</visible>
+            </bg>
+            <flags>
+                <bold>false</bold>
+                <bottom>false</bottom>
+                <draggable>true</draggable>
+                <italic>false</italic>
+                <right>false</right>
+            </flags>
+            <padding>4</padding>
+            <pos>
+                <x>400</x>
+                <y>400</y>
+            </pos>
+            <text>
+                <alpha>255</alpha>
+                <blue>255</blue>
+                <font>Segoe UI Symbol</font>
+                <fonts>
+
+                </fonts>
+                <green>255</green>
+                <red>255</red>
+                <size>10</size>
+                <stroke>
+                    <alpha>255</alpha>
+                    <blue>0</blue>
+                    <green>0</green>
+                    <red>0</red>
+                    <width>0</width>
+                </stroke>
+            </text>
+        </box>
+        <broadcast>false</broadcast>
+        <ilist>Sixgodg,Angilhari,Gatonmas,Hongan,Sixgodd,Sixgodcd,Cpttn,Odynmasuu,Meios,Meiods,Zirow</ilist>
+        <lookfor1>segment</lookfor1>
+        <lookfor2>odyssey</lookfor2>
+        <lookfor3>ody</lookfor3>
+        <lookfor4>c farm</lookfor4>
+        <lookfor5>sheol</lookfor5>
+        <save>false</save>
+        <showgui>true</showgui>
+    </global>
+</settings>
