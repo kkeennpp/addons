@@ -377,6 +377,7 @@ MigrationBackup/
 /packetviewer
 /Omen
 /mumor
+*.eup
 *.zip
 *.rar
 /Synergy.zipx
@@ -422,5 +423,6 @@ MigrationBackup/
 /ChatLink
 /cellhelp
 /cancel
+/barfiller
 *.csv
 *.txt
