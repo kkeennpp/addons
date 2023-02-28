@@ -1,3 +1,4 @@
+_addon.name = 'Multifollow'
 _addon.author   = 'Amaiya and Aeolas'
 _addon.version  = '1.4.2'
 _addon.commands = {'mf','multifollow'}

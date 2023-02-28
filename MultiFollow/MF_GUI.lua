@@ -2,7 +2,11 @@ require('coroutine')
 texts = require('texts')
 local _events = {}
 
-Colors = {["false"] = "\\cs(255,0,0)",["true"] = "\\cs(0,255,0)"}
+Colors = {
+    ["false"] = "\\cs(255,0,0)",
+    ["true"] = "\\cs(0,255,0)",
+    }
+
 color = {}
 afollowme = false
 afollowdist = 1

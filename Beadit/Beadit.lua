@@ -30,7 +30,7 @@ default = {
 	active = true,
     box = {
         pos={x=400,y=400},
-        text={font='Segoe UI Symbol',size=10,},
+        text={font='Segoe UI Symbol',size=10},
         bg={alpha=150,red=0,green=0,blue=0},
         flags={draggable=true},
         padding=4

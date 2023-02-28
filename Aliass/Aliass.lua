@@ -1,5 +1,6 @@
+_addon.name = 'Aliass'
 _addon.author   = 'Amaiya'
-_addon.version  = '1.0'
+_addon.version  = '1.0.0'
 _addon.commands = {'al','aliass'}
 
 require('logger')
@@ -333,12 +334,12 @@ function autows()
 		while aws do
 			local player = windower.ffxi.get_player()
 			--if player.vitals.tp >= 3000 then
-			if (player.vitals.tp > 1000 and player.status == 1) then
+			if (player.vitals.tp > 1500 and player.status == 1) then
 				--windower.send_command('input /ws \"Detonator\" \<t\>')
 				--windower.send_command('input /ws \"Wildfire\" \<t\>')
-				windower.send_command('input /ws \"Savage Blade\" \<t\>')
+				--windower.send_command('input /ws \"Savage Blade\" \<t\>')
 				--windower.send_command('input /ws \"Mordant Rime\" \<t\>')
-				--windower.send_command('input /ws \"Leaden Salute\" \<t\>')
+				windower.send_command('input /ws \"Leaden Salute\" \<t\>')
 				--windower.send_command('input /ws \"King\'s Justice\" \<t\>')
 			end
 			coroutine.sleep(.8)

@@ -1,5 +1,5 @@
 _addon.author   = 'Amaiya'
-_addon.version  = '1.0'
+_addon.version  = '1.0.0'
 _addon.commands = {'bat'}
 
 --1.0   initial working release
@@ -141,6 +141,6 @@ windower.register_event('addon command', function (...)
 	elseif args[1]:lower() == "remove" then
 		settings.petlist:remove(args[2]:trim())
     elseif S{'r','reload'}:contains(cmd) then
-	    windower.send_command('lua reload betterautotarget')
+	    windower.send_command('lua reload bat')
     end
 end)

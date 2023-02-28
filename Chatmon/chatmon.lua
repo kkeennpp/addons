@@ -1,5 +1,6 @@
+_addon.name = 'Chatmon'
 _addon.author   = 'Amaiya'
-_addon.version  = '1.1'
+_addon.version  = '1.1.0'
 _addon.commands = {'cm','chatmon'}
 
 --1.0   initial working release

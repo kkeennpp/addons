@@ -1,5 +1,5 @@
 _addon.name = 'AzureSubs'
-_addon.version = '1'
+_addon.version = '1.0.0'
 _addon.author = 'Amaiya'
 _addon.commands = {'asub','azuresubs','asubs'}
 
