@@ -211,7 +211,6 @@ function updatedisplay()
 end
 
 window = texts.new(updatedisplay(),settings.box,settings)
-window:show()
 
 windower.register_event('load', function()
     windower.add_to_chat(200,'Welcome to SortieTracker! To see a list of commands, type //stt help')
@@ -229,9 +228,10 @@ windower.register_event('load', function()
     if zone_info ~= nil then
         if zone_info.zone == 133 or zone_info.zone == 189 or zone_info.zone == 275 then
             running = true
-            window:show()
             location = "A"
             log("Entered Sortie zone, now starting")
+            window:show()
+	        window:text(updatedisplay())
         else
             window:hide()
             running = false
@@ -245,21 +245,20 @@ windower.register_event('zone change', function()
     if zone_info ~= nil then
         if zone_info.zone == 133 or zone_info.zone == 189 or zone_info.zone == 275 then
             running = true
-            window:show()
             location = "A"
             log("Entered Sortie zone, now starting")
+            window:show()
+	        window:text(updatedisplay())
         elseif zone_info.zone == 267 then
             if running then
                 running = false
                 location = "Drifts"
                 log("Exited Sortie, display previous run")
 	            get_gal()
-		        window:text(updatedisplay())
             end
         else
             window:hide()
             running = false
-            log("Waiting to enter Sortie zone...")
         end
     end
 end)
@@ -275,25 +274,47 @@ windower.register_event('incoming chunk',function(id, data, modified, injected, 
 		
 		gained_gal = current_gal - starting_gal
 		window:text(updatedisplay())
-		--log('current: '..current_gal)
-		--log('starting: '..starting_gal)
-		--log('gained: '..gained_gal)
     elseif id == 0x027 and not injected then
 		local p = packets.parse('incoming', data)
         f:append('\n'..os.date("%X")..' Player: '..p["Player"]..', Player Index: '..p["Player Index"])
-        log(p["Player Index"])
-        if p["Player Index"]:contains('Chest #A3') then
+        log(p["Player"]..', '..p["Player Index"])
+        if tostring(p["Player Index"]):contains('Chest #A3') then
             CHA3 = true
-        elseif p["Player Index"]:contains('Chest #A4') then
+        elseif tostring(p["Player Index"]):contains('Chest #A4') then
             CHA4 = true
-        elseif p["Player Index"]:contains('Casket #A1') then
+        elseif tostring(p["Player Index"]):contains('Casket #A1') then
             CAA1 = true
-        elseif p["Player Index"]:contains('Casket #A2') then
+        elseif tostring(p["Player Index"]):contains('Casket #A2') then
             CAA2 = true
-        elseif p["Player Index"]:contains('Coffer #A') then
+        elseif tostring(p["Player Index"]):contains('Coffer #A') then
             COA = true
         end
+	    get_gal()
 	end
+end)
+
+windower.register_event('incoming text',function(orig,mod,orig_mode,mod_mode)
+    if orig:find('#A3') then
+        f:append('\n'..os.date("%X")..' '..orig..', '..mod)
+        CHA3 = true
+        log("Chest #A3")
+    elseif orig:find('#A4') then
+        f:append('\n'..os.date("%X")..' '..orig..', '..mod)
+        CHA4 = true
+        log("Chest #A4")
+    elseif orig:find('#A1') then
+        f:append('\n'..os.date("%X")..' '..orig..', '..mod)
+        CAA1 = true
+        log("Casket #A1")
+    elseif orig:find('#A2') then
+        f:append('\n'..os.date("%X")..' '..orig..', '..mod)
+        CAA2 = true
+        log("Casket #A2")
+    elseif orig:find('#A') then
+        f:append('\n'..os.date("%X")..' '..orig..', '..mod)
+        COA = true
+        log("Coffer #A")
+    end
 end)
 
 function get_gal()
@@ -353,7 +374,6 @@ windower.register_event('addon command', function (...)
         map:path(windower.addon_path..'maps/Lower.png')
     end
 	get_gal()
-	window:text(updatedisplay())
 end)
 
 windower.register_event('mouse', function (type, x, y, delta, blocked)
@@ -406,6 +426,5 @@ windower.register_event('mouse', function (type, x, y, delta, blocked)
             map:path(windower.addon_path..'maps/Lower.png')
         end
 	    get_gal()
-		window:text(updatedisplay())
     end
 end)
