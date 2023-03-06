@@ -9,6 +9,7 @@ config = require('config')
 packets = require('packets')
 images = require('images')
 res = require('resources')
+files = require('files')
 texts = require('texts')
 
 running = false
@@ -216,9 +217,17 @@ windower.register_event('load', function()
     windower.add_to_chat(200,'Welcome to SortieTracker! To see a list of commands, type //stt help')
 	get_gal()
 
+	local player = windower.ffxi.get_player()
+    f = files.new(player.name..'.txt')
+    if f:exists() and settings.save then
+        f:append('\n\n'..os.date("%X")..' Addon loaded, logging started')
+    else
+        f:write(os.date("%X")..' Addon loaded, logging started')
+    end
+
     local zone_info = windower.ffxi.get_info()
     if zone_info ~= nil then
-        if zone_info.zone == 133 or zone_info.zone == 189 then
+        if zone_info.zone == 133 or zone_info.zone == 189 or zone_info.zone == 275 then
             running = true
             window:show()
             location = "A"
@@ -234,7 +243,7 @@ end)
 windower.register_event('zone change', function()
     local zone_info = windower.ffxi.get_info()
     if zone_info ~= nil then
-        if zone_info.zone == 133 or zone_info.zone == 189 then
+        if zone_info.zone == 133 or zone_info.zone == 189 or zone_info.zone == 275 then
             running = true
             window:show()
             location = "A"
@@ -244,6 +253,7 @@ windower.register_event('zone change', function()
                 running = false
                 location = "Drifts"
                 log("Exited Sortie, display previous run")
+	            get_gal()
 		        window:text(updatedisplay())
             end
         else
@@ -268,6 +278,21 @@ windower.register_event('incoming chunk',function(id, data, modified, injected, 
 		--log('current: '..current_gal)
 		--log('starting: '..starting_gal)
 		--log('gained: '..gained_gal)
+    elseif id == 0x027 and not injected then
+		local p = packets.parse('incoming', data)
+        f:append('\n'..os.date("%X")..' Player: '..p["Player"]..', Player Index: '..p["Player Index"])
+        log(p["Player Index"])
+        if p["Player Index"]:contains('Chest #A3') then
+            CHA3 = true
+        elseif p["Player Index"]:contains('Chest #A4') then
+            CHA4 = true
+        elseif p["Player Index"]:contains('Casket #A1') then
+            CAA1 = true
+        elseif p["Player Index"]:contains('Casket #A2') then
+            CAA2 = true
+        elseif p["Player Index"]:contains('Coffer #A') then
+            COA = true
+        end
 	end
 end)
 
@@ -327,6 +352,7 @@ windower.register_event('addon command', function (...)
     else
         map:path(windower.addon_path..'maps/Lower.png')
     end
+	get_gal()
 	window:text(updatedisplay())
 end)
 
@@ -379,6 +405,7 @@ windower.register_event('mouse', function (type, x, y, delta, blocked)
         else
             map:path(windower.addon_path..'maps/Lower.png')
         end
+	    get_gal()
 		window:text(updatedisplay())
     end
 end)

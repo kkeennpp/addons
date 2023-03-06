@@ -39,6 +39,28 @@ function quit()
 	windower.send_command('lua unload aliass')
 end
 
+function scraft(ammt)
+    if skillup then
+        skillup = false
+		log('Crafting stopped')
+    else
+        skillup = true
+		log('Crafting '..ammt..' times //al skill to stop')
+		craftcount = 0
+		while skillup do
+			windower.send_command('input /lastsynth')
+			coroutine.sleep(15)
+			craftcount = craftcount + 1
+			log(craftcount)
+			if craftcount >= ammt then
+				skillup = false
+				log('Crafting completed')
+			end
+			coroutine.sleep(5)
+		end
+    end
+end
+
 function sheal()
     if skillup then
         skillup = false
@@ -783,6 +805,12 @@ windower.register_event('addon command', function (...)
 			sgeo()
 		elseif args[2] == 'sing' then
 			ssing()
+		elseif args[2] == 'craft' then
+			if tonumber(args[3]) ~= nil then
+				scraft(tonumber(args[3]))
+			else
+				scraft(12)
+			end
 		else
 			skillup = false
 			log('Skillup stopped')
