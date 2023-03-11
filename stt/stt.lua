@@ -44,6 +44,8 @@ CAD1 = false
 CAD2 = false
 COD = false
 
+AURUM = false
+
 CHE = false
 CAE1 = false
 CAE2 = false
@@ -278,42 +280,42 @@ windower.register_event('incoming chunk',function(id, data, modified, injected, 
 		local p = packets.parse('incoming', data)
         f:append('\n'..os.date("%X")..' Player: '..p["Player"]..', Player Index: '..p["Player Index"])
         log(p["Player"]..', '..p["Player Index"])
-        if tostring(p["Player Index"]):contains('Chest #A3') then
+        if tostring(p["Player Index"]):contains('3') then
             CHA3 = true
-        elseif tostring(p["Player Index"]):contains('Chest #A4') then
+        elseif tostring(p["Player Index"]):contains('4') then
             CHA4 = true
         elseif tostring(p["Player Index"]):contains('Casket #A1') then
             CAA1 = true
         elseif tostring(p["Player Index"]):contains('Casket #A2') then
             CAA2 = true
-        elseif tostring(p["Player Index"]):contains('Coffer #A') then
-            COA = true
+        elseif tostring(p["Player Index"]):contains('28') then COA = true
+        --elseif p["Player Index"] == 28 then COA = true
+        elseif tostring(p["Player Index"]):contains('38') then
+            AURUM = true
+        elseif tostring(p["Player Index"]):contains('42') then
+            CAF1 = true
+        elseif tostring(p["Player Index"]):contains('45') then
+            CAG1 = true
         end
 	    get_gal()
 	end
 end)
 
-windower.register_event('incoming text',function(orig,mod,orig_mode,mod_mode)
-    if orig:find('#A3') then
-        f:append('\n'..os.date("%X")..' '..orig..', '..mod)
-        CHA3 = true
-        log("Chest #A3")
-    elseif orig:find('#A4') then
-        f:append('\n'..os.date("%X")..' '..orig..', '..mod)
-        CHA4 = true
-        log("Chest #A4")
-    elseif orig:find('#A1') then
-        f:append('\n'..os.date("%X")..' '..orig..', '..mod)
-        CAA1 = true
-        log("Casket #A1")
-    elseif orig:find('#A2') then
-        f:append('\n'..os.date("%X")..' '..orig..', '..mod)
-        CAA2 = true
-        log("Casket #A2")
-    elseif orig:find('#A') then
-        f:append('\n'..os.date("%X")..' '..orig..', '..mod)
-        COA = true
-        log("Coffer #A")
+windower.register_event('incoming text',function(orig)
+    if orig:find('#A') then
+        f:append('\n'..os.date("%X")..' '..orig)
+    elseif orig:find('#B') then
+        f:append('\n'..os.date("%X")..' '..orig)
+    elseif orig:find('#C') then
+        f:append('\n'..os.date("%X")..' '..orig)
+    elseif orig:find('#D') then
+        f:append('\n'..os.date("%X")..' '..orig)
+    elseif orig:find('#E') then
+        f:append('\n'..os.date("%X")..' '..orig)
+    elseif orig:find('#F') then
+        f:append('\n'..os.date("%X")..' '..orig)
+    elseif orig:find('#G') then
+        f:append('\n'..os.date("%X")..' '..orig)
     end
 end)
 
@@ -365,6 +367,12 @@ windower.register_event('addon command', function (...)
         else        
             running = true
             window:show()
+        end
+    elseif S{'m','map'}:contains(cmd) then
+        if map and map:visible() then
+            map:hide()
+        else
+            map:show()
         end
     end
 
@@ -418,13 +426,14 @@ windower.register_event('mouse', function (type, x, y, delta, blocked)
                     end
                 end
             end
-        end
 
-        if S{'A','B','C','D'}:contains(location) then
-            map:path(windower.addon_path..'maps/Upper.png')
-        else
-            map:path(windower.addon_path..'maps/Lower.png')
+            if S{'A','B','C','D'}:contains(location) then
+                map:path(windower.addon_path..'maps/Upper.png')
+            else
+                map:path(windower.addon_path..'maps/Lower.png')
+            end
+
+	        get_gal()
         end
-	    get_gal()
     end
 end)
