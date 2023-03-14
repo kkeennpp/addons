@@ -280,22 +280,30 @@ windower.register_event('incoming chunk',function(id, data, modified, injected, 
 		local p = packets.parse('incoming', data)
         f:append('\n'..os.date("%X")..' Player: '..p["Player"]..', Player Index: '..p["Player Index"])
         log(p["Player"]..', '..p["Player Index"])
-        if tostring(p["Player Index"]):contains('3') then
-            CHA3 = true
-        elseif tostring(p["Player Index"]):contains('4') then
-            CHA4 = true
-        elseif tostring(p["Player Index"]):contains('Casket #A1') then
-            CAA1 = true
-        elseif tostring(p["Player Index"]):contains('Casket #A2') then
-            CAA2 = true
+        if tostring(p["Player Index"]):contains('13') then CHA3 = true
+        elseif tostring(p["Player Index"]):contains('17') then CHA4 = true
+        elseif tostring(p["Player Index"]):contains('26') then CAA1 = true
+        elseif tostring(p["Player Index"]):contains('27') then CAA2 = true
         elseif tostring(p["Player Index"]):contains('28') then COA = true
-        --elseif p["Player Index"] == 28 then COA = true
-        elseif tostring(p["Player Index"]):contains('38') then
-            AURUM = true
-        elseif tostring(p["Player Index"]):contains('42') then
-            CAF1 = true
-        elseif tostring(p["Player Index"]):contains('45') then
-            CAG1 = true
+        elseif tostring(p["Player Index"]):contains('14') then CHB3 = true
+        elseif tostring(p["Player Index"]):contains('18') then CHB4 = true
+        elseif tostring(p["Player Index"]):contains('29') then CAB1 = true
+        elseif tostring(p["Player Index"]):contains('30') then CAB2 = true
+        elseif tostring(p["Player Index"]):contains('31') then COB = true
+        elseif tostring(p["Player Index"]):contains('15') then CHC3 = true
+        elseif tostring(p["Player Index"]):contains('19') then CHC4 = true
+        elseif tostring(p["Player Index"]):contains('32') then CAC1 = true
+        elseif tostring(p["Player Index"]):contains('33') then CAC2 = true
+        elseif tostring(p["Player Index"]):contains('34') then COC = true
+        elseif tostring(p["Player Index"]):contains('16') then CHD3 = true
+        elseif tostring(p["Player Index"]):contains('20') then CHD4 = true
+        elseif tostring(p["Player Index"]):contains('35') then CAD1 = true
+        elseif tostring(p["Player Index"]):contains('36') then CAD2 = true
+        elseif tostring(p["Player Index"]):contains('37') then COD = true
+        elseif tostring(p["Player Index"]):contains('38') then AURUM = true
+        elseif tostring(p["Player Index"]):contains('39') then CAE1 = true
+        elseif tostring(p["Player Index"]):contains('42') then CAF1 = true
+        elseif tostring(p["Player Index"]):contains('45') then CAG1 = true
         end
 	    get_gal()
 	end

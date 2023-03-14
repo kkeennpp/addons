@@ -315,7 +315,8 @@ function autoengage()
 		while afighter do
 			mobdead = true
 			while mobdead do
-				mob1 = windower.ffxi.get_mob_by_name('Qilin')
+				mob1 = windower.ffxi.get_mob_by_name('Akvan')
+				--mob1 = windower.ffxi.get_mob_by_name('Qilin')
 				if mob1.hpp > 0 then
 					mobdead = false
 					coroutine.sleep(.5)
@@ -330,13 +331,15 @@ function autoengage()
 			mobalive = true
 			while mobalive do
 				local player = windower.ffxi.get_player()
-				mob1 = windower.ffxi.get_mob_by_name('Qilin')
+				mob1 = windower.ffxi.get_mob_by_name('Akvan')
+				--mob1 = windower.ffxi.get_mob_by_name('Qilin')
 				if mob1.hpp == 0 then
 					mobalive = false
 				end
-				if player.vitals.tp >= 3000 then
-				--if player.vitals.tp > 1000 then
-					windower.send_command('input /ws \"King\'s Justice\" \<t\>')
+				--if player.vitals.tp >= 3000 then
+				if player.vitals.tp > 1500 then
+					windower.send_command('input /ws \"Tachi: Fudo\" \<t\>')
+					--windower.send_command('input /ws \"King\'s Justice\" \<t\>')
 					--windower.send_command('input /ws Resolution \<t\>')
 					coroutine.sleep(.5)
 				end
@@ -356,12 +359,12 @@ function autows()
 		while aws do
 			local player = windower.ffxi.get_player()
 			--if player.vitals.tp >= 3000 then
-			if (player.vitals.tp > 1500 and player.status == 1) then
+			if (player.vitals.tp > 1000 and player.status == 1) then
 				--windower.send_command('input /ws \"Detonator\" \<t\>')
 				--windower.send_command('input /ws \"Wildfire\" \<t\>')
-				--windower.send_command('input /ws \"Savage Blade\" \<t\>')
+				windower.send_command('input /ws \"Savage Blade\" \<t\>')
 				--windower.send_command('input /ws \"Mordant Rime\" \<t\>')
-				windower.send_command('input /ws \"Leaden Salute\" \<t\>')
+				--windower.send_command('input /ws \"Leaden Salute\" \<t\>')
 				--windower.send_command('input /ws \"King\'s Justice\" \<t\>')
 			end
 			coroutine.sleep(.8)
