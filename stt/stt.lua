@@ -218,13 +218,13 @@ windower.register_event('load', function()
     windower.add_to_chat(200,'Welcome to SortieTracker! To see a list of commands, type //stt help')
 	get_gal()
 
-	local player = windower.ffxi.get_player()
-    f = files.new(player.name..'.txt')
-    if f:exists() and settings.save then
-        f:append('\n\n'..os.date("%X")..' Addon loaded, logging started')
-    else
-        f:write(os.date("%X")..' Addon loaded, logging started')
-    end
+	--local player = windower.ffxi.get_player()
+    --f = files.new(player.name..'.txt')
+    --if f:exists() and settings.save then
+        --f:append('\n\n'..os.date("%X")..' Addon loaded, logging started')
+    --else
+        --f:write(os.date("%X")..' Addon loaded, logging started')
+    --end
 
     local zone_info = windower.ffxi.get_info()
     if zone_info ~= nil then
@@ -278,8 +278,8 @@ windower.register_event('incoming chunk',function(id, data, modified, injected, 
 		window:text(updatedisplay())
     elseif id == 0x027 and not injected then
 		local p = packets.parse('incoming', data)
-        f:append('\n'..os.date("%X")..' Player: '..p["Player"]..', Player Index: '..p["Player Index"])
-        log(p["Player"]..', '..p["Player Index"])
+        --f:append('\n'..os.date("%X")..' Player: '..p["Player"]..', Player Index: '..p["Player Index"])
+        --log(p["Player"]..', '..p["Player Index"])
         if tostring(p["Player Index"]):contains('13') then CHA3 = true
         elseif tostring(p["Player Index"]):contains('17') then CHA4 = true
         elseif tostring(p["Player Index"]):contains('26') then CAA1 = true
@@ -301,31 +301,46 @@ windower.register_event('incoming chunk',function(id, data, modified, injected, 
         elseif tostring(p["Player Index"]):contains('36') then CAD2 = true
         elseif tostring(p["Player Index"]):contains('37') then COD = true
         elseif tostring(p["Player Index"]):contains('38') then AURUM = true
+        elseif tostring(p["Player Index"]):contains('21') then CHE = true
         elseif tostring(p["Player Index"]):contains('39') then CAE1 = true
+        elseif tostring(p["Player Index"]):contains('40') then CAE2 = true
+        elseif tostring(p["Player Index"]):contains('41') then COE = true
+        elseif tostring(p["Player Index"]):contains('22') then CHF = true
         elseif tostring(p["Player Index"]):contains('42') then CAF1 = true
+        elseif tostring(p["Player Index"]):contains('43') then CAF2 = true
+        elseif tostring(p["Player Index"]):contains('44') then COF = true
+        elseif tostring(p["Player Index"]):contains('23') then CHG = true
         elseif tostring(p["Player Index"]):contains('45') then CAG1 = true
+        elseif tostring(p["Player Index"]):contains('46') then CAG2 = true
+        elseif tostring(p["Player Index"]):contains('47') then COG = true
+        elseif tostring(p["Player Index"]):contains('24') then CHH = true
+        elseif tostring(p["Player Index"]):contains('48') then CAH1 = true
+        elseif tostring(p["Player Index"]):contains('49') then CAH2 = true
+        elseif tostring(p["Player Index"]):contains('50') then COH = true
         end
 	    get_gal()
 	end
 end)
 
-windower.register_event('incoming text',function(orig)
-    if orig:find('#A') then
-        f:append('\n'..os.date("%X")..' '..orig)
-    elseif orig:find('#B') then
-        f:append('\n'..os.date("%X")..' '..orig)
-    elseif orig:find('#C') then
-        f:append('\n'..os.date("%X")..' '..orig)
-    elseif orig:find('#D') then
-        f:append('\n'..os.date("%X")..' '..orig)
-    elseif orig:find('#E') then
-        f:append('\n'..os.date("%X")..' '..orig)
-    elseif orig:find('#F') then
-        f:append('\n'..os.date("%X")..' '..orig)
-    elseif orig:find('#G') then
-        f:append('\n'..os.date("%X")..' '..orig)
-    end
-end)
+--windower.register_event('incoming text',function(orig)
+    --if orig:find('#A') then
+        --f:append('\n'..os.date("%X")..' '..orig)
+    --elseif orig:find('#B') then
+        --f:append('\n'..os.date("%X")..' '..orig)
+    --elseif orig:find('#C') then
+        --f:append('\n'..os.date("%X")..' '..orig)
+    --elseif orig:find('#D') then
+        --f:append('\n'..os.date("%X")..' '..orig)
+    --elseif orig:find('#E') then
+        --f:append('\n'..os.date("%X")..' '..orig)
+    --elseif orig:find('#F') then
+        --f:append('\n'..os.date("%X")..' '..orig)
+    --elseif orig:find('#G') then
+        --f:append('\n'..os.date("%X")..' '..orig)
+    --elseif orig:find('#H') then
+        --f:append('\n'..os.date("%X")..' '..orig)
+    --end
+--end)
 
 function get_gal()
     if not windower.ffxi.get_info().logged_in then
