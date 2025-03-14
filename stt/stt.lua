@@ -279,7 +279,7 @@ windower.register_event('incoming chunk',function(id, data, modified, injected, 
     elseif id == 0x027 and not injected then
 		local p = packets.parse('incoming', data)
         --f:append('\n'..os.date("%X")..' Player: '..p["Player"]..', Player Index: '..p["Player Index"])
-        --log(p["Player"]..', '..p["Player Index"])
+        log(p["Player"]..', '..p["Player Index"])
         if tostring(p["Player Index"]):contains('13') then CHA3 = true
         elseif tostring(p["Player Index"]):contains('17') then CHA4 = true
         elseif tostring(p["Player Index"]):contains('26') then CAA1 = true
@@ -321,26 +321,6 @@ windower.register_event('incoming chunk',function(id, data, modified, injected, 
 	    get_gal()
 	end
 end)
-
---windower.register_event('incoming text',function(orig)
-    --if orig:find('#A') then
-        --f:append('\n'..os.date("%X")..' '..orig)
-    --elseif orig:find('#B') then
-        --f:append('\n'..os.date("%X")..' '..orig)
-    --elseif orig:find('#C') then
-        --f:append('\n'..os.date("%X")..' '..orig)
-    --elseif orig:find('#D') then
-        --f:append('\n'..os.date("%X")..' '..orig)
-    --elseif orig:find('#E') then
-        --f:append('\n'..os.date("%X")..' '..orig)
-    --elseif orig:find('#F') then
-        --f:append('\n'..os.date("%X")..' '..orig)
-    --elseif orig:find('#G') then
-        --f:append('\n'..os.date("%X")..' '..orig)
-    --elseif orig:find('#H') then
-        --f:append('\n'..os.date("%X")..' '..orig)
-    --end
---end)
 
 function get_gal()
     if not windower.ffxi.get_info().logged_in then

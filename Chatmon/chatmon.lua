@@ -1,210 +1,135 @@
-_addon.name = 'Chatmon'
-_addon.author   = 'Amaiya'
-_addon.version  = '1.1.0'
-_addon.commands = {'cm','chatmon'}
+--[[
+Copyright © 2024, Windower
+All rights reserved.
 
---1.0   initial working release
---1.1   added text logging, updated color key
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
 
-require('logger')
-require('coroutine')
-config = require('config')
-packets = require('packets')
-res = require('resources')
-texts = require('texts')
-files = require('files')
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of chatmon nor the
+      names of its contributors may be used to endorse or promote products
+      derived from this software without specific prior written permission.
 
-windower.register_event('load', function()
-	local player = windower.ffxi.get_player()
-    f = files.new(player.name..'.txt')
-    if f:exists() and settings.save then
-        f:append('\n\n'..os.date("%X")..' Addon loaded, logging started')
-    else
-        f:write(os.date("%X")..' Addon loaded, logging started')
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL Windower BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+]]
+
+_addon = {}
+_addon.name = 'chatmon'
+_addon.version = '1.1.4'
+_addon.author = 'WindowerDevTeam'
+_addon.commands = {'chatmon'}
+
+require('sets')
+require('chat')
+local config = require('config')
+local chat_res = require('resources').chat
+local plugin_settings = require('deprecate_plugin')
+local get_triggers = require('get_triggers')
+
+windower.create_dir(windower.addon_path .. '/data/sounds/')
+
+local defaults = {
+    DisableOnFocus=false,
+    SoundInterval=5,
+}
+local settings = config.load(plugin_settings or defaults)
+
+local triggers = {}
+local function load_triggers(name)
+    triggers = get_triggers.by_name(name)
+end
+windower.register_event('login', load_triggers)
+
+local function on_load()
+    local player = windower.ffxi.get_player()
+    if player then
+        load_triggers(player.name)
     end
-end)
+end
+windower.register_event('load', on_load)
 
-default = {
-    showgui = true,
-    lookfor1 = 'segment',
-    lookfor2 = 'odyssey',
-    lookfor3 = 'ody',
-    lookfor4 = 'c farm',
-    lookfor5 = 'sheol',
-    broadcast = false,
-    save = true,
-    box = {
-        pos={x=400,y=400},
-        text={font='Segoe UI Symbol',size=10,},
-        bg={alpha=150,red=0,green=0,blue=0},
-        flags={draggable=true},
-        padding=4
-    },
-    ilist = S{"Sixgodg","Meiods","Meios","Cpttn"
-    }
-}
-
-Colors = {
-    [0] = "\\cs(255,255,255)", --say
-    [1] = "\\cs(0,150,255)", --shout
-    [3] = "\\cs(255,150,0)", --tell
-    [4] = "\\cs(255,255,255)", --party
-    [5] = "\\cs(255,255,255)", --linkshell
-    [8] = "\\cs(255,255,255)", --emote
-    [26] = "\\cs(0,255,0)", --yell
-    [27] = "\\cs(255,255,255)", --linkshell2
-    [33] = "\\cs(255,255,255)", --unity
-    [34] = "\\cs(255,255,255)", --assistj
-    [35] = "\\cs(255,255,255)", --assiste
-}
-
-settings = config.load(default)
-
-function updatedisplay(mode,sender,message)
-	local str = 'Chatmon'
-	str = str..'\nCurrently searching for: \"'..settings.lookfor1..'\", \"'..settings.lookfor2..'\", \"'..settings.lookfor3..'\", \"'..settings.lookfor4..'\", \"'..settings.lookfor5..'\"'
-    if message then
-	    str = str..'\n\n'..os.date("%X")..' '..Colors[tonumber(mode)]..sender..': \\cr'..message
-        f:append('\n'..os.date("%X")..' '..sender..': '..message)
-        if prev1 then
-            str = str..prev1
-            if prev2 then
-                str = str..prev2
-                prev2 = prev1
-                prev1 = '\n'..os.date("%X")..' '..Colors[tonumber(mode)]..sender..': \\cr'..message
-            else
-                prev2 = prev1
-                prev1 = '\n'..os.date("%X")..' '..Colors[tonumber(mode)]..sender..': \\cr'..message
-            end
-        else
-            prev1 = '\n'..os.date("%X")..' '..Colors[tonumber(mode)]..sender..': \\cr'..message
+local last_sound = 0
+local function play_sound(sound)
+    if os.time() - last_sound >= settings.SoundInterval then
+        last_sound = os.time();
+        if windower.file_exists(windower.addon_path .. '/sounds/' .. sound) then
+            windower.play_sound(windower.addon_path .. '/sounds/' .. sound)
+        elseif windower.file_exists(windower.addon_path .. '/data/sounds/' .. sound) then
+            windower.play_sound(windower.addon_path .. '/data/sounds/' .. sound)
+        elseif windower.file_exists(sound) then
+            windower.play_sound(sound)
         end
     end
-
-    str = str..'\n\n Color key: '..Colors[3]..'Tell, '..Colors[26]..'Yell, '..Colors[1]..'Shout\\cr'
-    return str
 end
 
-window = texts.new(updatedisplay(),settings.box,settings)
-window:show()
+local function check_triggers(from, text, sender)
+    if windower.has_focus() and settings.DisableOnFocus then
+        return
+    end
 
-windower.register_event('chat message', function(message,sender,mode)
-    local lmsg = message:lower()
-    local lsend = sender:lower()
-
-    if not settings.ilist:contains(sender) then
-        if lmsg:contains(settings.lookfor1) or lsend:contains(settings.lookfor1) then
-            window:text(updatedisplay(mode,sender,message))
-            if settings.broadcast then
-                windower.send_ipc_message('chatmon '..mode..' '..sender..' '..message)
-            end
-        elseif lmsg:contains(settings.lookfor2) or lsend:contains(settings.lookfor2) then
-            window:text(updatedisplay(mode,sender,message))
-            if settings.broadcast then
-                windower.send_ipc_message('chatmon '..mode..' '..sender..' '..message)
-            end
-        elseif lmsg:contains(settings.lookfor3) or lsend:contains(settings.lookfor3) then
-            window:text(updatedisplay(mode,sender,message))
-            if settings.broadcast then
-                windower.send_ipc_message('chatmon '..mode..' '..sender..' '..message)
-            end
-        elseif lmsg:contains(settings.lookfor4) or lsend:contains(settings.lookfor4) then
-            window:text(updatedisplay(mode,sender,message))
-            if settings.broadcast then
-                windower.send_ipc_message('chatmon '..mode..' '..sender..' '..message)
-            end
-        elseif lmsg:contains(settings.lookfor5) or lsend:contains(settings.lookfor5) then
-            window:text(updatedisplay(mode,sender,message))
-            if settings.broadcast then
-                windower.send_ipc_message('chatmon '..mode..' '..sender..' '..message)
-            end
+    text = windower.convert_auto_trans(text)
+    text = text:strip_colors()
+    local event = {from = from, text = text, sender = sender or ''}
+    for _, trigger in ipairs(triggers) do
+        if trigger:check(event) then
+            play_sound(trigger.sound)
+            return
         end
     end
-end)
+end
 
---windower.register_event('incoming text', function(original)
-    --window:text(updatedisplay("0","test",original))
---end)
+local function chat_handler(message, sender, mode)
+    local chat_mode = chat_res[mode]
 
-windower.register_event('ipc message', function (msg)
-	local args = msg:split(' ')
-
-    if args[1]:lower() == 'chatmon' then
-        local rmode = args[2]
-        local rsender = args[3]
-        local rmessage = string.gsub(msg,args[1]..' '..args[2]..' '..args[3]..' ',"")
-        --log(rmode,rsender,rmessage)
-        window:text(updatedisplay(rmode,rsender,rmessage))
+    if chat_mode == nil then
+        print(string.format('Chatmon error: unknown chat mode = %d', mode))
+        print(string.format('  msg = %s', message))
+        return
     end
-end)
 
-windower.register_event('addon command', function (...)
-	local args = {...}
-	local cmd = args[1] and args[1]:lower()
-
-    if args[1]:lower() == 'gui' then
-        if settings.showgui then
-            settings.showgui = false
-            window:hide()
-            windower.add_to_chat(200,'GUI now hidden')
-        else
-            settings.showgui = true
-            window:show()
-            windower.add_to_chat(200,'GUI now being displayed')
-        end
-    elseif S{'b','broadcast'}:contains(cmd) then
-        if settings.broadcast then
-            settings.broadcast = false
-            windower.add_to_chat(200,'No longer broadcasting to all accounts')
-        else
-            settings.broadcast = true
-            windower.add_to_chat(200,'Now broadcasting results to all accounts')
-        end
-    elseif S{'s','s1'}:contains(cmd) then
-        if (args[2]) ~= nil then
-            settings.lookfor1 = (args[2])
-            windower.add_to_chat(200,"Now searching for "..settings.lookfor1)
-            window:text(updatedisplay())
-        else
-            windower.add_to_chat(200,"Invalid term provided as a search target: "..tostring(args[2]))
-		end
-    elseif args[1]:lower() == 's2' then
-        if (args[2]) ~= nil then
-            settings.lookfor2 = (args[2])
-            windower.add_to_chat(200,"Now searching for "..settings.lookfor2)
-            window:text(updatedisplay())
-        else
-            windower.add_to_chat(200,"Invalid term provided as a search target: "..tostring(args[2]))
-		end
-    elseif args[1]:lower() == 's3' then
-        if (args[2]) ~= nil then
-            settings.lookfor3 = (args[2])
-            windower.add_to_chat(200,"Now searching for "..settings.lookfor3)
-            window:text(updatedisplay())
-        else
-            windower.add_to_chat(200,"Invalid term provided as a search target: "..tostring(args[2]))
-		end
-    elseif args[1]:lower() == 's4' then
-        if (args[2]) ~= nil then
-            settings.lookfor4 = (args[2])
-            windower.add_to_chat(200,"Now searching for "..settings.lookfor4)
-            window:text(updatedisplay())
-        else
-            windower.add_to_chat(200,"Invalid term provided as a search target: "..tostring(args[2]))
-		end
-    elseif args[1]:lower() == 's5' then
-        if (args[2]) ~= nil then
-            settings.lookfor5 = (args[2])
-            windower.add_to_chat(200,"Now searching for "..settings.lookfor5)
-            window:text(updatedisplay())
-        else
-            windower.add_to_chat(200,"Invalid term provided as a search target: "..tostring(args[2]))
-		end
-    elseif args[1]:lower() == "add" then
-		settings.ilist:add(args[2]:trim())
-	elseif args[1]:lower() == "remove" then
-		settings.ilist:remove(args[2]:trim())
-    elseif S{'r','reload'}:contains(cmd) then
-	    windower.send_command('lua reload chatmon')
+    if chat_mode.name == 'emote' then -- emote triggers check match against the sender name not message text.
+        return
     end
-end)
+
+    check_triggers(chat_res[mode].name, message, sender)
+end
+windower.register_event('chat message', chat_handler)
+
+local function incoming_text_handler(original)
+    check_triggers('all', original)
+end
+windower.register_event('incoming text', incoming_text_handler)
+
+local function examine_handler(name)
+    check_triggers('examine', name)
+end
+windower.register_event('examined', examine_handler)
+
+local function invite_handler(name)
+    check_triggers('invite', name)
+end
+windower.register_event('party invite', invite_handler)
+
+local function emote_handler(_, sender_id, target_id)
+    local player_id = windower.ffxi.get_player().id
+    if (player_id ~= target_id) then
+        return
+    end
+
+    local sender_name = windower.ffxi.get_mob_by_id(sender_id).name
+    check_triggers('emote', sender_name)
+end
+windower.register_event('emote', emote_handler)

@@ -10,9 +10,12 @@ packets = require('packets')
 res = require('resources')
 
 skillup = false
+craftgear = false
 picture = false
 asinger = false
 afighter = false
+sfarm = false
+favorup = false
 aws = false
 running = false
 
@@ -45,20 +48,67 @@ function scraft(ammt)
 		log('Crafting stopped')
     else
         skillup = true
-		log('Crafting '..ammt..' times //al skill to stop')
+		log('Crafting '..ammt..' times //al craft to stop')
 		craftcount = 0
 		while skillup do
 			windower.send_command('input /lastsynth')
-			coroutine.sleep(15)
+			coroutine.sleep(16)
 			craftcount = craftcount + 1
-			log(craftcount)
+			log(craftcount.." of "..ammt.." completed")
 			if craftcount >= ammt then
 				skillup = false
 				log('Crafting completed')
 			end
-			coroutine.sleep(5)
+			coroutine.sleep(6)
 		end
     end
+end
+
+function gcraft()
+	if craftgear then
+		craftgear = false
+		log('Crafting mode disabled')
+		windower.send_command('gs enable ring1')
+		coroutine.sleep(.1)
+		windower.send_command('gs enable ring2')
+		coroutine.sleep(.1)
+		windower.send_command('gs enable neck')
+		coroutine.sleep(.1)
+		windower.send_command('gs enable head')
+		coroutine.sleep(.1)
+		windower.send_command('gs enable body')
+		coroutine.sleep(.1)
+		windower.send_command('gs enable hands')
+	else
+		craftgear = true
+		log('Crafting mode enabled, locking crafting gear')
+		log('//al craft gear to disable')
+		windower.send_command('gs disable ring1')
+		coroutine.sleep(.1)
+		windower.send_command('gs disable ring2')
+		coroutine.sleep(.1)
+		windower.send_command('gs disable neck')
+		coroutine.sleep(.1)
+		windower.send_command('gs disable head')
+		coroutine.sleep(.1)
+		windower.send_command('gs disable body')
+		coroutine.sleep(.1)
+		windower.send_command('gs disable hands')
+		coroutine.sleep(.1)
+		windower.send_command('input /equip ring1 \"Artificer\'s ring\"')
+		coroutine.sleep(.1)
+		windower.send_command('input /equip ring2 \"Craftmaster\'s ring\"')
+		coroutine.sleep(.1)
+		windower.send_command('input /equip neck \"Smithy\'s torque\"')
+		coroutine.sleep(.1)
+		windower.send_command('input /equip head \"Magnifying Spectacles\"')
+		coroutine.sleep(.1)
+		windower.send_command('input /equip body \"Blacksmith\'s Smock\"')
+		coroutine.sleep(.1)
+		windower.send_command('input /equip hands \"Smithy\'s Mitts\"')
+		coroutine.sleep(.1)
+		windower.send_command('input /lockstyleset 20')
+	end
 end
 
 function sheal()
@@ -145,9 +195,80 @@ function ssing()
     else
         skillup = true
 		log('Singing skillup starting //al skill to stop')
+		sst = 1
 		while skillup do
-			windower.send_command('input /ma \"Cure\" <me>')
-			coroutine.sleep(5)
+			if sst == 1 then
+				windower.send_command('input /ma \"Fire Carol\" <me>')
+				coroutine.sleep(9)
+				sst = 2
+			elseif sst == 2 then
+				windower.send_command('input /ma \"Ice Carol\" <me>')
+				coroutine.sleep(9)
+				sst = 3
+			elseif sst == 3 then
+				windower.send_command('input /ma \"Wind Carol\" <me>')
+				coroutine.sleep(9)
+				sst = 1
+			end
+		end
+    end
+end
+
+function ssmn()
+    if skillup then
+        skillup = false
+		log('Summoning skillup stopped')
+    else
+        skillup = true
+		log('Summoning skillup starting //al skill to stop')
+		while skillup do
+			windower.send_command('input /ma \"Carbuncle\" <me>')
+			coroutine.sleep(10)
+			windower.send_command('input /ja \"Release\" <me>')
+			coroutine.sleep(1)
+		end
+    end
+end
+
+function spup()
+    if skillup then
+        skillup = false
+		log('Automaton skillup stopped')
+    else
+        skillup = true
+		log('Automaton skillup starting //al skill to stop')
+		sst = 1
+		while skillup do
+			--windower.send_command('input /ja \"Deploy\" <t>')
+			coroutine.sleep(1)
+			--windower.send_command('input /ja \"Retrieve\" <me>')
+			coroutine.sleep(2)
+			sst = sst + 1
+			if sst == 3 then
+				windower.send_command('input /ja \"Thunder Maneuver\" <me>')
+				--windower.send_command('input /ja \"Light Maneuver\" <me>')
+			elseif sst == 4 then
+				windower.send_command('input /ja \"Wind Maneuver\" <me>')
+				--windower.send_command('input /ja \"Dark Maneuver\" <me>')
+			elseif sst == 5 then
+				windower.send_command('input /ja \"Water Maneuver\" <me>')
+				sst = 1
+			end
+			coroutine.sleep(13)
+		end
+    end
+end
+
+function srng()
+    if skillup then
+        skillup = false
+		log('Ranged skillup stopped')
+    else
+        skillup = true
+		log('Ranged skillup starting //al skill to stop')
+		while skillup do
+			windower.send_command('input /ra <t>')
+			coroutine.sleep(4)
 		end
     end
 end
@@ -349,6 +470,61 @@ function autoengage()
 	end
 end
 
+windower.register_event('lose buff', function(buff_id)
+    if buff_id == 431 then
+		favorup = false
+	end
+end)
+
+windower.register_event('gain buff', function(buff_id)
+    if buff_id == 431 then
+		favorup = true
+	end
+end)
+
+function smnfarm()
+    if sfarm then
+        sfarm = false
+		log("SMN Farmer stopped")
+    else
+        sfarm = true
+		log("SMN Farmer started")
+		sfc = 1
+		while sfarm do
+			local player = windower.ffxi.get_player()
+			local pt = windower.ffxi.get_mob_by_target("me")
+			if scf == 2 then
+				windower.send_command('input /ja Release \<me\>')
+				scf = 1
+			end
+			coroutine.sleep(3)
+
+			if (pt.pet_index ~= nil) then
+				--log("pet found")
+			else
+				windower.send_command('input /ma Carbuncle \<me\>')
+			end
+			coroutine.sleep(6)
+
+			if favorup then 
+				--log("Favor found")
+			else
+				log("Favor not found, using favor")
+				windower.send_command('input /ja \"Avatar\'s Favor\" \<me\>')
+			end
+			coroutine.sleep(2)
+
+			if player.vitals.hpp < 65 then
+				log("low hp, healing")
+				windower.send_command('input /ja \"Healing Ruby II\" \<me\>')
+			end
+			sfc = sfc + 1
+			--coroutine.sleep(5)
+			coroutine.sleep(50)
+		end
+	end
+end
+
 function autows()
     if aws then
         aws = false
@@ -359,12 +535,12 @@ function autows()
 		while aws do
 			local player = windower.ffxi.get_player()
 			--if player.vitals.tp >= 3000 then
-			if (player.vitals.tp > 1000 and player.status == 1) then
+			if (player.vitals.tp > 2000 and player.status == 1) then
 				--windower.send_command('input /ws \"Detonator\" \<t\>')
 				--windower.send_command('input /ws \"Wildfire\" \<t\>')
-				windower.send_command('input /ws \"Savage Blade\" \<t\>')
+				--windower.send_command('input /ws \"Savage Blade\" \<t\>')
 				--windower.send_command('input /ws \"Mordant Rime\" \<t\>')
-				--windower.send_command('input /ws \"Leaden Salute\" \<t\>')
+				windower.send_command('input /ws \"Leaden Salute\" \<t\>')
 				--windower.send_command('input /ws \"King\'s Justice\" \<t\>')
 			end
 			coroutine.sleep(.8)
@@ -382,9 +558,9 @@ function invall()
 	windower.send_command('input /pcmd add Morti')
 	coroutine.sleep(2)
 	windower.send_command('input /pcmd add Amaiya')
+	coroutine.sleep(2)
+	windower.send_command('input /pcmd add Maichan')
 end
-
-
 
 function followoff()
 	log('Sending cancel follow to all characters')
@@ -440,6 +616,19 @@ function dispelall()
     local mob = windower.ffxi.get_mob_by_target('t')
 	coroutine.sleep(.1)
 	windower.send_command('send @all /ma dispel ' .. tostring(mob.id))
+end
+
+function wscata(target_id)
+	log('Sending cataclysm to all characters')
+    local mob = windower.ffxi.get_mob_by_target('t')
+	coroutine.sleep(.1)
+	windower.send_command('send @all /ws Cataclysm \\<t\\>')
+end
+
+function fcircle()
+	log('Sending full circle to all geo')
+	coroutine.sleep(.1)
+	windower.send_command('send @geo /ja \\"Full Circle\\" \\<me\\>')
 end
 
 function mdia3(target_id)
@@ -516,11 +705,11 @@ end
 function warp()
 	log("Equiping warp ring and warping")
 	coroutine.sleep(.1)
-	windower.send_command('input /equip ring2 \\"Warp Ring\\"')
+	windower.send_command('input /equip ring2 \"Warp Ring\"')
 	coroutine.sleep(1)
 	windower.send_command('gs disable ring2')
 	coroutine.sleep(11)
-	windower.send_command('input /item \\"Warp Ring\\" <me>')
+	windower.send_command('input /item \"Warp Ring\" <me>')
 	coroutine.sleep(1)
 	windower.send_command('gs enable ring2')
 end
@@ -808,8 +997,16 @@ windower.register_event('addon command', function (...)
 			sgeo()
 		elseif args[2] == 'sing' then
 			ssing()
+		elseif args[2] == 'smn' then
+			ssmn()
+		elseif args[2] == 'pup' then
+			spup()
+		elseif args[2] == 'rng' then
+			srng()
 		elseif args[2] == 'craft' then
-			if tonumber(args[3]) ~= nil then
+			if args[3] == 'gear' then
+				gcraft()
+			elseif tonumber(args[3]) ~= nil then
 				scraft(tonumber(args[3]))
 			else
 				scraft(12)
@@ -818,12 +1015,28 @@ windower.register_event('addon command', function (...)
 			skillup = false
 			log('Skillup stopped')
 		end
+	elseif args[1] == 'craft' then
+		if args[2] == 'gear' then
+			gcraft()
+		elseif tonumber(args[2]) ~= nil then
+			scraft(tonumber(args[2]))
+		else
+			scraft(12)
+		end
+    elseif args[1] == 'ws' then
+		if args[2] == 'cata' then
+			wscata()
+		end
+    elseif args[1] == 'fc' then
+		fcircle()
     elseif args[1] == 'zeni' then
 		zeni()
     elseif args[1] == 'autoa' then
 		autoengage()
     elseif args[1] == 'aws' then
 		autows()
+    elseif args[1] == 'sfarm' then
+		smnfarm()
     elseif args[1] == 'dia' then
 		diaall()
     elseif args[1] == 'dispel' then
