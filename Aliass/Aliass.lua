@@ -470,18 +470,6 @@ function autoengage()
 	end
 end
 
-windower.register_event('lose buff', function(buff_id)
-    if buff_id == 431 then
-		favorup = false
-	end
-end)
-
-windower.register_event('gain buff', function(buff_id)
-    if buff_id == 431 then
-		favorup = true
-	end
-end)
-
 function smnfarm()
     if sfarm then
         sfarm = false
@@ -492,35 +480,54 @@ function smnfarm()
 		sfc = 1
 		while sfarm do
 			local player = windower.ffxi.get_player()
-			local pt = windower.ffxi.get_mob_by_target("me")
-			if scf == 2 then
+			if sfc == 10 then
+				--log("release")
 				windower.send_command('input /ja Release \<me\>')
-				scf = 1
+				sfc = 1
+				coroutine.sleep(1.3)
 			end
 			coroutine.sleep(3)
-
+			
+			local pt = windower.ffxi.get_mob_by_target("me")
 			if (pt.pet_index ~= nil) then
 				--log("pet found")
 			else
 				windower.send_command('input /ma Carbuncle \<me\>')
+				coroutine.sleep(1.7)
 			end
-			coroutine.sleep(6)
+			coroutine.sleep(3)
+			
+			language = windower.ffxi.get_info().language:lower()
+			local buffs = {}
+			favorup = false
+			for _,v in pairs(windower.ffxi.get_player().buffs) do
+				if windower.wc_match(res.buffs[v][language],"avatar's favor") then
+					--log("Favor found")
+					favorup = true
+				end
+			end
+			coroutine.sleep(1)
 
-			if favorup then 
-				--log("Favor found")
-			else
+			if not favorup then
 				log("Favor not found, using favor")
 				windower.send_command('input /ja \"Avatar\'s Favor\" \<me\>')
+				coroutine.sleep(1.5)
 			end
-			coroutine.sleep(2)
+			coroutine.sleep(3)
 
 			if player.vitals.hpp < 65 then
 				log("low hp, healing")
 				windower.send_command('input /ja \"Healing Ruby II\" \<me\>')
+				coroutine.sleep(.3)
 			end
 			sfc = sfc + 1
-			--coroutine.sleep(5)
-			coroutine.sleep(50)
+			local sfc_sleep = math.random(1, 99)
+			local sfc_sleep = sfc_sleep / 100
+			local sfc_sleep2 = math.random(12, 20)
+			local sfc_sleep = sfc_sleep + sfc_sleep2
+			--log(sfc_sleep)
+			--log(os.clock())
+			coroutine.sleep(sfc_sleep)
 		end
 	end
 end

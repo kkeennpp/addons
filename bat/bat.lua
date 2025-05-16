@@ -60,7 +60,8 @@ function Find_Nearest_Target()
 		--f:append('\n'..key..','..tostring(mob["valid_target"])..','..mob.name..','..math.sqrt(mob.distance)..','..tostring(mob.is_npc)..','..mob.hpp..','..tostring(mob.status))
 		if settings.highhp then
 			if mob.valid_target and mob.is_npc and (mob.status == 1) and (mob.hpp >= 90) then
-				if not settings.petlist:contains(mob.name:lower()) then
+				--if not settings.petlist:contains(mob.name:lower()) then
+				if not settings.petlist:contains(mob.name()) then
 					if dist_targ == -1 then
 						id_targ = key
 						dist_targ = math.sqrt(mob.distance)
@@ -71,7 +72,8 @@ function Find_Nearest_Target()
 				end
 			end
 		elseif mob.valid_target and mob.is_npc and (mob.status == 1) then
-			if not settings.petlist:contains(mob.name:lower()) then
+			--if not settings.petlist:contains(mob.name:lower()) then
+			if not settings.petlist:contains(mob.name()) then
 				if dist_targ == -1 then
 					id_targ = key
 					dist_targ = math.sqrt(mob.distance)
